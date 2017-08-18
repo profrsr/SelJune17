@@ -1,0 +1,157 @@
+5)write the syntax for xpath for dynamically changing id like hcl1234, hcl12457, hcl6542.
+
+Relative XPath: //tagName[start-with(.,'value')]
+
+6)How can you find the parent tag name of an element,if given id , name or xpath?
+
+		System.setProperty("webdriver.chrome.driver", "./drivers/chromedriver.exe");
+		ChromeDriver driver = new ChromeDriver();
+		//Load the URL
+		driver.get("http://leaftaps.com/opentaps");
+		// maximize the window
+		driver.manage().window().maximize();
+		driver.manage().window().getSize();
+		driver.manage().timeouts()/*.implicitlyWait(30, TimeUnit.SECONDS)*/;
+		//find WebElement and get TagName
+		String tagName = driver.findElementByXPath("//input[@id='username']/..").getTagName();		
+		System.out.println(tagName);
+		driver.findElementById("username").sendKeys("DemoSalesManager");
+		WebElement sdfgh=driver.findElementById("password").sendKeys("crmsfa");
+		//find WebElement By ClassName and click
+		driver.findElementByClassName("decorativeSubmit").click();
+		//find WebElement ByLinkText and click
+		driver.findElementByLinkText("CRM/SFA").click();
+		
+		
+7)write a code to print all dropdown value from list?
+
+		
+		WebElement source = driver.findElementById("createLeadForm_industryEnumId");
+		Select dropdown = new Select(source);
+		List<WebElement> allOptions = dropdown.getOptions();		
+		dropdown.selectByIndex(count-1);		
+		for (WebElement eachOption : allOptions) {
+		System.out.println(eachOption.getText());		
+		}
+
+
+
+9) whrite a program to print the number of row and columns in a web table?
+public class LearnWebTable {
+	
+	public static void main(String[] args) throws InterruptedException {
+		System.setProperty("webdriver.chrome.driver", "./drivers/chromedriver.exe");
+		ChromeDriver driver = new ChromeDriver();		
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		driver.get("http://leaftaps.com/opentaps");
+		driver.findElementById("username").sendKeys("DemoSalesManager");
+		driver.findElementById("password").sendKeys("crmsfa");
+		driver.findElementByClassName("decorativeSubmit").click();
+		driver.findElementByLinkText("CRM/SFA").click();
+		driver.findElementByLinkText("Leads").click();
+		driver.findElementByLinkText("Find Leads").click();		
+		WebElement table = driver.findElementByXPath("//div[@class='x-grid3-scroller']");		
+		List<WebElement> rows = table.findElements(By.tagName("tr"));
+		System.out.println(rows.size());
+		(or)
+		System.out.println(driver.findElementByXPath("//div[@class='x-grid3-scroller']//tr").size())
+		List<WebElement> columns = lastRow.findElements(By.tagName("td"));
+		System.out.println(columns.size());
+		(or)
+		System.out.println(driver.findElementByXPath("//div[@class='x-grid3-scroller']//tr[1]/td").size())
+	}
+
+}
+
+10) How will you switch to specific window, if you have multiple windows?
+
+		String handle=driver.getWindowHandle();
+		Set<String> allwindow=driver.getWindowHandles();
+		List<String>  set = new ArrayList<String>();
+		set.addAll(allwindow);
+		driver.switchTo().window(set.get(index));
+		
+11)I have a package which has 10 TestNg and I would like to run first 6 class file in parallel and rest 4 in sequential
+
+<suite name="Suite" parallel="classes" verbose="5">
+	<test name="Test1" parallel="classes" thread-count="3">
+		<classes>
+			<class name="package.name.ClassName" />
+			<class name="package.name.ClassName" />
+			<class name="package.name.ClassName" />
+			<class name="package.name.ClassName" />
+			<class name="package.name.ClassName" />
+			<class name="package.name.ClassName" />
+		</classes>
+	</test><!-- Test -->
+	<test name="Test2" parallel="false">
+		<classes>
+		<class name="package.name.ClassName" />
+		<class name="package.name.ClassName" />
+		<class name="package.name.ClassName" />
+		<class name="package.name.ClassName" />
+		</classes>
+	</test> <!-- Test -->
+</suite> <!-- Suite -->
+
+12)write a program to read data from data provider to TestNg test?
+
+	@Test(dataProvider="fetchdata")
+	public void login(String url,String usn,String pwd) throws Exception {
+		invokeApp("chrome", "http://leaftaps.com/opentaps");
+		enterById("username", usn);
+		enterById("password", pwd);
+		clickByClassName("decorativeSubmit");
+	}	
+
+	@DataProvider(name="fetchdata")
+		public Object[][]  getdata1() {			
+			return DataInputProvider.getData();		
+	}
+	
+18)write a program to read all excel value from sheet2?
+
+public class DataInputProvider{
+
+	@Test
+	public void getSheet() {
+
+
+		try {
+			FileInputStream fis = new FileInputStream("./data/flock.xlsx");
+			XSSFWorkbook workbook = new XSSFWorkbook(fis);
+			XSSFSheet sheet = workbook.getSheetAt(1);
+			// get the number of rows
+			int rowCount = sheet.getLastRowNum();
+			// get the number of columns
+			int columnCount = sheet.getRow(0).getLastCellNum();
+			data = new String[rowCount][columnCount];
+			// loop through the rows
+			for(int i=1; i <rowCount+1; i++){
+				try {
+					XSSFRow row = sheet.getRow(i);
+					for(int j=0; j <columnCount; j++){ // loop through the columns
+						try {
+							String cellValue = "";
+							try{
+								if(row.getCell(j).getCellType() == 1)
+									cellValue = row.getCell(j).getStringCellValue();
+								else if(row.getCell(j).getCellType() == 0)
+									cellValue = ""+row.getCell(j).getNumericCellValue();
+
+							}catch(NullPointerException e){
+
+							}
+							
+						}
+			fis.close();
+			workbook.close();
+		} catch (Exception e) {
+ 			e.printStackTrace();
+		}
+		return data;
+		}
+   }
+
+		
